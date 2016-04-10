@@ -13,7 +13,8 @@ PerformanceManager pm = new PerformanceManager();
 
 #### 指定输出地址和输出文件名
 ```java
-
+LogUtils.setLogPrefix("Server");  //设置输出的文件名
+LogUtils.setLogPath("./log");   //设置输出文件的路径
 ```
 
 #### 指定输出的时间间隔

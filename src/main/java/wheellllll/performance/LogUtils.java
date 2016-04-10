@@ -20,12 +20,14 @@ public class LogUtils {
      */
     private static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+    public static String logPath;
+    public static String logPrefix = "clientRecord_%s.log";
 
     public static void log(HashMap<String, Integer> indexes) {
         BufferedWriter bufferedWriter = null;
         FileWriter fileWriter = null;
         try {
-            File file = new File(String.format("clientRecord_%s.log", df.format(new Date())));
+            File file = new File(logPath + "/" + String.format(logPrefix, df.format(new Date())));
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -54,5 +56,16 @@ public class LogUtils {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static void setLogPrefix(String prefix) {
+        logPrefix = prefix + "_%s.log";
+
+    }
+
+    public static void setLogPath(String path) {
+        File file = new File(path);
+        file.mkdirs();
+        logPath = path;
     }
 }

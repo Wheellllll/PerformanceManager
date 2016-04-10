@@ -1,5 +1,6 @@
 package sweetll.me;
 
+import wheellllll.performance.LogUtils;
 import wheellllll.performance.PerformanceManager;
 
 import java.util.concurrent.TimeUnit;
@@ -7,13 +8,18 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
     public static void main(String[] args) {
+
         // write your code here
+        LogUtils.setLogPath("./log");
+        LogUtils.setLogPrefix("test");
         PerformanceManager mPM = new PerformanceManager();
 
         mPM.setTimeUnit(TimeUnit.SECONDS);
 
         mPM.addIndex("loginSuccess");
         mPM.addIndex("loginFail");
+
+
 
         mPM.start();
 

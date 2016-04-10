@@ -54,4 +54,16 @@ public class PerformanceManager {
     public void updateIndex(String index, int num) {
         indexes.put(index, indexes.get(index) + num);
     }
+
+    public void removeIndex(String index) {
+        indexes.remove(index);
+    }
+
+    public void clear() {
+        indexes.clear();
+    }
+
+    public void setIndex(String index, Integer num) {
+        indexes.put(index, num);
+    }
 }

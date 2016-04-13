@@ -59,3 +59,13 @@ pm.clear();
 ```java
 pm.stop();
 ```
+#### 输出格式
+>Log at: 时间
+指标：数值
+指标：数值
+...
+
+#### 输出示例：
+>Log at : 2016-04-10 22:41:53
+	loginSuccess : 4
+	loginFail : 8

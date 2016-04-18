@@ -18,7 +18,7 @@ public class LogUtils {
     /**
      * A <code>SimpleDateFormat</code> to format time to customer standard
      */
-    private static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
 
     public static String logPath;
     public static String logPrefix = "clientRecord_%s.log";

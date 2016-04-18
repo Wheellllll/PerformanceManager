@@ -2,6 +2,30 @@
 > 这是一个简单的性能管理模块，可以自由添加指标和每分钟输出日志
 
 ### 安装
+
+#### Maven
+
+```xml
+<repositories>
+    <repository>
+        <id>tahiti-nexus-snapshots</id>
+        <name>Tahiti NEXUS</name>
+        <url>http://sse.tongji.edu.cn/tahiti/nexus/content/groups/public</url>
+        <releases><enabled>false</enabled></releases>
+        <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>wheellllll</groupId>
+        <artifactId>PerformanceManager</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </dependency>
+</dependencies>
+```
+
+#### 手工下载
 从 https://github.com/Wheellllll/PerformanceManager/releases 下载最新的jar包添加到项目依赖里去
 
 ### 使用说明

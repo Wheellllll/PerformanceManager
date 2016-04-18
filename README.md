@@ -5,6 +5,7 @@
 从 https://github.com/Wheellllll/PerformanceManager/releases 下载最新的jar包添加到项目依赖里去
 
 ### 使用说明
+本模块是线程安全的，您可以在多个线程中对同一个指标进行更新操作
 
 #### 获取实例
 ```java

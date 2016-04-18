@@ -19,8 +19,6 @@ public class Main {
         mPM.addIndex("loginSuccess");
         mPM.addIndex("loginFail");
 
-
-
         mPM.start();
 
         for (int i = 0; i < 10; ++i) {

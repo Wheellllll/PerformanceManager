@@ -20,18 +20,14 @@ public class LogUtils {
      */
     private static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
 
-    public static String logPath;
-    public static String logPrefix = "clientRecord_%s.log";
-
-    public static void log(HashMap<String, Integer> indexes) {
+    public static void log(File file, HashMap<String, Integer> indexes) {
         BufferedWriter bufferedWriter = null;
         FileWriter fileWriter = null;
         try {
-            File file = new File(logPath + "/" + String.format(logPrefix, df.format(new Date())));
             if (!file.exists()) {
                 file.createNewFile();
             }
-            fileWriter = new FileWriter(file.getName(), true);
+            fileWriter = new FileWriter(file.getAbsolutePath(), true);
             bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write(String.format("\tLog at : %s\n", df.format(new Date())));
             for (String key : indexes.keySet()) {
@@ -58,14 +54,4 @@ public class LogUtils {
         }
     }
 
-    public static void setLogPrefix(String prefix) {
-        logPrefix = prefix + "_%s.log";
-
-    }
-
-    public static void setLogPath(String path) {
-        File file = new File(path);
-        file.mkdirs();
-        logPath = path;
-    }
 }

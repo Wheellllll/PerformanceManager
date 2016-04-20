@@ -10,9 +10,9 @@ public class Main {
     public static void main(String[] args) {
 
         // write your code here
-        LogUtils.setLogPath("./log");
-        LogUtils.setLogPrefix("test");
         PerformanceManager mPM = new PerformanceManager();
+        mPM.setLogPath("./log");
+        mPM.setLogPrefix("test");
 
         mPM.setTimeUnit(TimeUnit.SECONDS);
 

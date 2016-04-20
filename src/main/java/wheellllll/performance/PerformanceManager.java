@@ -1,5 +1,8 @@
 package wheellllll.performance;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -18,6 +21,10 @@ public class PerformanceManager {
     private TimeUnit mTimeUnit = TimeUnit.MINUTES;
     private ReadWriteLock mLock = new ReentrantReadWriteLock();
 
+    private String logPath = "./";
+    private String logPrefix = "record_%s.log";
+    private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
+
     public PerformanceManager() {
         sc = Executors.newScheduledThreadPool(1);
     }
@@ -34,12 +41,24 @@ public class PerformanceManager {
         this.mTimeUnit = timeUnit;
     }
 
+    public void setLogPrefix(String prefix) {
+        logPrefix = prefix + "_%s.log";
+
+    }
+
+    public void setLogPath(String path) {
+        File file = new File(path);
+        file.mkdirs();
+        logPath = path;
+    }
+
     public void start() {
         sc.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
                 mLock.readLock().lock();
-                LogUtils.log(indexes);
+                File file = new File(logPath + "/" + String.format(logPrefix, df.format(new Date())));
+                LogUtils.log(file, indexes);
                 mLock.readLock().unlock();
             }
         },

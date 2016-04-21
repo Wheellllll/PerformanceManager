@@ -38,20 +38,24 @@ public class IntervalLogger extends Logger {
         this.mTimeUnit = timeUnit;
     }
 
+    public void setDateFormat(String dateFormat) {
+        df.applyPattern(dateFormat);
+    }
+
 
     public void start() {
         sc.scheduleAtFixedRate(new Runnable() {
            @Override
            public void run() {
                mLock.readLock().lock();
-               File file = new File(mLogDir, mLogPrefix + df.format(new Date()) + mLogSuffix);
+               File file = new File(mLogDir, mLogPrefix + " " + df.format(new Date()) + "." + mLogSuffix);
                LogUtils.log(file, indexes, false);
                mLock.readLock().unlock();
            }
        },
-            mInitialDelay,
-            mPeriod,
-            mTimeUnit);
+                mInitialDelay,
+                mPeriod,
+                mTimeUnit);
     }
 
     public void stop() {

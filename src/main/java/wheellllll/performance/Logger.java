@@ -9,7 +9,6 @@ public abstract class Logger {
     protected String mLogDir = "./";
     protected String mLogPrefix = "record";
     protected String mLogSuffix = "log";
-    protected boolean isArchive = true;
 
     public void setLogDir(String logDir) {
         File file = new File(logDir);
@@ -25,10 +24,6 @@ public abstract class Logger {
         mLogSuffix = logSuffix;
     }
 
-    public void setArchive(boolean archive) {
-        isArchive = archive;
-    }
-
     public String getLogDir() {
         return mLogDir;
     }
@@ -39,9 +34,5 @@ public abstract class Logger {
 
     public String getLogSuffix() {
         return mLogSuffix;
-    }
-
-    public boolean getArchive() {
-        return isArchive;
     }
 }

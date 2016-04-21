@@ -1,7 +1,7 @@
 package sweetll.me;
 
-import wheellllll.performance.LogUtils;
-import wheellllll.performance.PerformanceManager;
+import wheellllll.performance.ArchiveManager;
+import wheellllll.performance.IntervalLogger;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,31 +10,37 @@ public class Main {
     public static void main(String[] args) {
 
         // write your code here
-        PerformanceManager mPM = new PerformanceManager();
+//        System.out.println(System.getProperty("java.io.tmpdir"));
+        ArchiveManager am = new ArchiveManager();
+        am.setArchiveDir("./archive");
 
+        IntervalLogger logger1 = new IntervalLogger();
+        logger1.setLogDir("./log");
+        logger1.setLogPrefix("test");
+        logger1.setInterval(1, TimeUnit.SECONDS);
 
-//        mPM.setLogPath("./log");
-//        mPM.setLogPrefix("test");
-//
-//        mPM.setTimeUnit(TimeUnit.SECONDS);
-//
-//        mPM.addIndex("loginSuccess");
-//        mPM.addIndex("loginFail");
-//
-//        mPM.start();
-//
-//        for (int i = 0; i < 10; ++i) {
-//            mPM.updateIndex("loginSuccess", 1);
-//            mPM.updateIndex("loginFail", 2);
-//            try {
-//                Thread.sleep(1000);
-//                System.out.println("" + i);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        mPM.stop();
+        logger1.addIndex("loginSuccess");
+        logger1.addIndex("loginFail");
+
+        am.addLogger(logger1);
+        am.setInterval(2, TimeUnit.SECONDS);
+
+        logger1.start();
+        am.start();
+
+        for (int i = 0; i < 10; ++i) {
+            logger1.updateIndex("loginSuccess", 1);
+            logger1.updateIndex("loginFail", 2);
+            try {
+                Thread.sleep(1000);
+                System.out.println("" + i);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        logger1.stop();
+        am.stop();
     }
 
 

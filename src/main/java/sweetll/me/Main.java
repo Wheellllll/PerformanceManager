@@ -34,17 +34,17 @@ public class Main {
         //Initial Archive Manager
         ArchiveManager am = new ArchiveManager();
         am.setArchiveDir("./archive");
-        am.setDatePattern("yyyy-MM-dd");
+        am.setDatePattern("yyyy-MM-dd HH:mm");
 
         am.addLogger(logger1);
         am.addLogger(logger2);
-        am.setInterval(2, TimeUnit.SECONDS);
+        am.setInterval(1, TimeUnit.DAYS);
 
 
         logger1.start();
         am.start();
 
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 300; ++i) {
             logger1.updateIndex("loginSuccess", 1);
             logger1.updateIndex("loginFail", 2);
             HashMap<String, String> map = new HashMap<>();

@@ -2,7 +2,9 @@ package sweetll.me;
 
 import wheellllll.performance.ArchiveManager;
 import wheellllll.performance.IntervalLogger;
+import wheellllll.performance.RealtimeLogger;
 
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 public class Main {
@@ -10,9 +12,8 @@ public class Main {
     public static void main(String[] args) {
         // write your code here
 
-        ArchiveManager am = new ArchiveManager();
-        am.setArchiveDir("./archive");
 
+        //Initial Interval Logger
         IntervalLogger logger1 = new IntervalLogger();
         logger1.setLogDir("./log");
         logger1.setLogPrefix("test");
@@ -23,15 +24,34 @@ public class Main {
 
         logger1.setFormatPattern("Login Success Number : ${loginSuccess}\nLogin Fail Number : ${loginFail}\n\n");
 
-//        am.addLogger(logger1);
-//        am.setInterval(2, TimeUnit.SECONDS);
+        //Initial Realtime Logger
+        RealtimeLogger logger2 = new RealtimeLogger();
+        logger2.setLogDir("./llog");
+        logger2.setLogPrefix("test");
+
+        logger2.setFormatPattern("Username : ${username}\nTime : ${time}\nMessage : ${message}\n\n");
+
+        //Initial Archive Manager
+        ArchiveManager am = new ArchiveManager();
+        am.setArchiveDir("./archive");
+        am.setDatePattern("yyyy-MM-dd");
+
+        am.addLogger(logger1);
+        am.addLogger(logger2);
+        am.setInterval(2, TimeUnit.SECONDS);
+
 
         logger1.start();
-//        am.start();
+        am.start();
 
         for (int i = 0; i < 10; ++i) {
             logger1.updateIndex("loginSuccess", 1);
             logger1.updateIndex("loginFail", 2);
+            HashMap<String, String> map = new HashMap<>();
+            map.put("username", "Sweet");
+            map.put("time", "2016-04-21");
+            map.put("message", "Hello World - " + i);
+            logger2.log(map);
             try {
                 Thread.sleep(1000);
                 System.out.println("" + i);
@@ -41,39 +61,6 @@ public class Main {
         }
 
         logger1.stop();
-//        am.stop();
+        am.stop();
     }
-
-
-
-/*
- Username: Sweet
- Time: 2016-04-20 16_42_25
- Message: foo
-
- Username: Black
- Time: 2016-4-20 16_42_30
- Message: bar
-
- ...
- ...
-
-    pm.setWorkDir("./WorkDir");
-    pm.setHistoryDir("./HistoryDir");
-    pm.setFormatPattern("");
-
-    pm.setArchiveMode(true);
-    pm.setArchiveDir("./ArchiveDir");
-
-    temp1
-    log6 log 7 log8
-
-    temp2
-    log1 log2 log3 log4 log5
-
-    4-20.zip
-    4-21.zip
-    4-22.zip
-    4-23.zip
-*/
 }

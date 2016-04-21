@@ -20,12 +20,12 @@ public class RealtimeLogger extends Logger {
 
     public void log(HashMap<String, String> data) {
         mLock.readLock().lock();
-        File file = new File(mLogDir, mLogPrefix + mLogSuffix);
+        File file = new File(mLogDir, mLogPrefix + "." + mLogSuffix);
         if (getFormatPattern() == null) {
-//            LogUtils.log(file, data, false);
+            LogUtils.log(file, data, true);
         }
         else {
-//            LogUtils.log(file, data, getFormatPattern(), false);
+            LogUtils.log(file, data, getFormatPattern(), true);
         }
         mLock.readLock().unlock();
     }

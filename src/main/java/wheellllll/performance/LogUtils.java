@@ -20,14 +20,14 @@ public class LogUtils {
      */
     private static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
 
-    public static void log(File file, HashMap<String, Integer> indexes) {
+    public static void log(File file, HashMap<String, Integer> indexes, boolean append) {
         BufferedWriter bufferedWriter = null;
         FileWriter fileWriter = null;
         try {
             if (!file.exists()) {
                 file.createNewFile();
             }
-            fileWriter = new FileWriter(file.getAbsolutePath(), true);
+            fileWriter = new FileWriter(file.getAbsolutePath(), append);
             bufferedWriter = new BufferedWriter(fileWriter);
             bufferedWriter.write(String.format("\tLog at : %s\n", df.format(new Date())));
             for (String key : indexes.keySet()) {

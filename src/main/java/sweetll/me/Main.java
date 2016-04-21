@@ -8,9 +8,8 @@ import java.util.concurrent.TimeUnit;
 public class Main {
 
     public static void main(String[] args) {
-
         // write your code here
-//        System.out.println(System.getProperty("java.io.tmpdir"));
+
         ArchiveManager am = new ArchiveManager();
         am.setArchiveDir("./archive");
 
@@ -22,11 +21,13 @@ public class Main {
         logger1.addIndex("loginSuccess");
         logger1.addIndex("loginFail");
 
-        am.addLogger(logger1);
-        am.setInterval(2, TimeUnit.SECONDS);
+        logger1.setFormatPattern("Login Success Number : ${loginSuccess}\nLogin Fail Number : ${loginFail}\n\n");
+
+//        am.addLogger(logger1);
+//        am.setInterval(2, TimeUnit.SECONDS);
 
         logger1.start();
-        am.start();
+//        am.start();
 
         for (int i = 0; i < 10; ++i) {
             logger1.updateIndex("loginSuccess", 1);
@@ -40,7 +41,7 @@ public class Main {
         }
 
         logger1.stop();
-        am.stop();
+//        am.stop();
     }
 
 

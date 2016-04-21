@@ -10,10 +10,16 @@ public abstract class Logger {
     protected String mLogPrefix = "record";
     protected String mLogSuffix = "log";
 
+    protected String mFormatPattern = null;
+
     public void setLogDir(String logDir) {
         File file = new File(logDir);
         file.mkdirs();
         mLogDir = logDir;
+    }
+
+    public void setFormatPattern(String formatPattern) {
+        mFormatPattern = formatPattern;
     }
 
     public void setLogPrefix(String logPrefix) {
@@ -34,5 +40,9 @@ public abstract class Logger {
 
     public String getLogSuffix() {
         return mLogSuffix;
+    }
+
+    public String getFormatPattern() {
+        return mFormatPattern;
     }
 }

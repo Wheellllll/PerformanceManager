@@ -1,5 +1,7 @@
 package wheellllll.performance;
 
+import org.apache.commons.lang3.text.StrSubstitutor;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -18,9 +20,8 @@ public class LogUtils {
     /**
      * A <code>SimpleDateFormat</code> to format time to customer standard
      */
-    private static SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss");
 
-    public static void log(File file, HashMap<String, Integer> indexes, boolean append) {
+    public static void log(File file, HashMap<String, String> indexes, boolean append) {
         BufferedWriter bufferedWriter = null;
         FileWriter fileWriter = null;
         try {
@@ -29,11 +30,42 @@ public class LogUtils {
             }
             fileWriter = new FileWriter(file.getAbsolutePath(), append);
             bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write(String.format("\tLog at : %s\n", df.format(new Date())));
             for (String key : indexes.keySet()) {
                 String record = String.format("\t%s : %d\n", key, indexes.get(key));
                 bufferedWriter.write(record);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bufferedWriter != null) {
+                    bufferedWriter.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (fileWriter != null) {
+                    fileWriter.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void log(File file, HashMap<String, String> indexes, String formatPattern, boolean append) {
+        BufferedWriter bufferedWriter = null;
+        FileWriter fileWriter = null;
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            fileWriter = new FileWriter(file.getAbsolutePath(), append);
+            bufferedWriter = new BufferedWriter(fileWriter);
+            StrSubstitutor sub = new StrSubstitutor(indexes);
+            String resolvedString = sub.replace(formatPattern);
+            bufferedWriter.write(resolvedString);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

@@ -15,7 +15,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class IntervalLogger extends Logger {
     private HashMap<String, Integer> indexes = new HashMap<>();
-    private HashMap<String, String> details = new HashMap<>();
     private ScheduledExecutorService sc = null;
     private ReadWriteLock mLock = null;
     private int mInitialDelay = 0;
@@ -49,7 +48,18 @@ public class IntervalLogger extends Logger {
            public void run() {
                mLock.readLock().lock();
                File file = new File(mLogDir, mLogPrefix + " " + df.format(new Date()) + "." + mLogSuffix);
-               LogUtils.log(file, indexes, false);
+
+               HashMap<String, String> data = new HashMap<>();
+               for (String key : indexes.keySet()) {
+                    data.put(key, Integer.toString(indexes.get(key)));
+               }
+
+               if (getFormatPattern() == null) {
+                   LogUtils.log(file, data, false);
+               }
+               else {
+                   LogUtils.log(file, data, getFormatPattern(), false);
+               }
                mLock.readLock().unlock();
            }
        },
@@ -65,13 +75,6 @@ public class IntervalLogger extends Logger {
     public void addIndex(String index) {
         mLock.writeLock().lock();
         indexes.put(index, 0);
-        mLock.writeLock().unlock();
-    }
-
-    public void addIndex(String index, String detail) {
-        mLock.writeLock().lock();
-        indexes.put(index, 0);
-        details.put(index, detail);
         mLock.writeLock().unlock();
     }
 

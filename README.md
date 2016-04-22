@@ -63,7 +63,8 @@ suffix=log
 前缀，后缀和日期格式可以通过以下方法指定
 ```java
 intervalLogger.setLogDir("./log");        //输出到当前工作目录下的log文件夹里
-intervalLogger.setLogPrefix("server");      //设置日志的前缀为server
+intervalLogger.setLogPrefix("server");    //设置日志的前缀为server
+intervalLogger.setLogSuffix("log");       //设置日志的后缀为log 
 intervalLogger.setDateFormat("yyyy-MM-dd HH_mm_ss");  //日期格式类似2016-04-21 19_36_30
 ```
 更多关于日期的格式化方法请参考 [https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html](https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html)
@@ -145,8 +146,9 @@ suffix=log
 
 前缀和后缀可以通过以下方法指定
 ```java
-realtimeLogger.setLogDir("./log");        //输出到当前工作目录下的log文件夹里
+realtimeLogger.setLogDir("./log");          //输出到当前工作目录下的log文件夹里
 realtimeLogger.setLogPrefix("server");      //设置日志的前缀为server
+realtimeLogger.setLogSuffix("log");         //设置日志的后缀为log
 ```
 
 #### 自定义输出格式

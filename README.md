@@ -2,9 +2,25 @@
 > 这是一个简单的性能管理模块，可以自由添加指标、定时输出日志到文件以及按需压缩.
 
 ### 警告
-本模块经过2.0版本后经过重构，如果想使用旧版的api请升级到1.4，不要升级到2.0以上
+本模块经过2.0版本后经过重构，如果想使用旧版的api请保持版本到1.3（文档在[https://github.com/Wheellllll/PerformanceManager/blob/master/README-1.0.md](https://github.com/Wheellllll/PerformanceManager/blob/master/README-1.0.md)），不要升级到2.0以上
 
 ### ChangeLog
+#### v2.0
+- 重构
+- 添加实时记录器
+- 添加压缩功能
+
+#### v1.3
+- 修复log输出的文件夹问题
+
+#### v1.2 
+- 加锁，成为线程安全的
+
+#### v1.1
+- 修复`windows`系统的`":"`bug
+
+#### v1.0
+- 诞生
 
 ### 安装
 

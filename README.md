@@ -5,6 +5,9 @@
 本模块经过2.0版本后经过重构，如果想使用旧版的api请保持版本到1.3（文档在[https://github.com/Wheellllll/PerformanceManager/blob/master/README-1.0.md](https://github.com/Wheellllll/PerformanceManager/blob/master/README-1.0.md)），不要升级到2.0以上
 
 ### ChangeLog
+#### v2.0.1
+- 添加字符串输出功能
+
 #### v2.0
 - 重构
 - 添加实时记录器

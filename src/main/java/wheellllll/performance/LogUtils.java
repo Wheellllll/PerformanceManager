@@ -31,10 +31,10 @@ public class LogUtils {
             fileWriter = new FileWriter(file.getAbsolutePath(), append);
             bufferedWriter = new BufferedWriter(fileWriter);
             for (String key : indexes.keySet()) {
-                String record = String.format("\t%s : %d\n", key, indexes.get(key));
+                String record = String.format("\t%s : %s\n", key, indexes.get(key));
                 bufferedWriter.write(record);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             try {

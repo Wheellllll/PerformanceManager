@@ -45,7 +45,9 @@ public class IntervalLogger extends Logger {
     public void start() {
         sc.scheduleAtFixedRate(() -> {
             mLock.readLock().lock();
-            File file = new File(mLogDir, mLogPrefix + " " + df.format(new Date()) + "." + mLogSuffix);
+            Date date = new Date();
+            File file = new File(mLogDir, mLogPrefix + " " + df.format(date) + "." + mLogSuffix);
+            File tmpFile = new File(getTmpFolder(), mLogPrefix + " " + df.format(date) + "." + mLogSuffix);
 
             HashMap<String, String> data = new HashMap<>();
             for (String key : indexes.keySet()) {
@@ -54,8 +56,10 @@ public class IntervalLogger extends Logger {
 
             if (getFormatPattern() == null) {
                 LogUtils.log(file, data, false);
+                if (isArchive) LogUtils.log(tmpFile, data, false);
             }
             else {
+                if (isArchive) LogUtils.log(tmpFile, data, false);
                 LogUtils.log(file, data, getFormatPattern(), false);
             }
             mLock.readLock().unlock();
@@ -85,6 +89,13 @@ public class IntervalLogger extends Logger {
         mLock.writeLock().lock();
         indexes.put(index, indexes.get(index) + num);
         mLock.writeLock().unlock();
+    }
+
+    public int getIndex(String index) {
+        mLock.readLock().lock();
+        int value = indexes.get(index);
+        mLock.readLock().unlock();
+        return value;
     }
 
     public void removeIndex(String index) {

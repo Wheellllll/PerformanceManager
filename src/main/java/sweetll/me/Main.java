@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         // write your code here
 
         //Initial Interval Logger
@@ -42,21 +42,46 @@ public class Main {
         logger1.start();
         am.start();
 
-        for (int i = 0; i < 300; ++i) {
-            logger1.updateIndex("loginSuccess", 1);
-            logger1.updateIndex("loginFail", 2);
-            HashMap<String, String> map = new HashMap<>();
-            map.put("username", "Sweet");
-            map.put("time", "2016-04-21");
-            map.put("message", "Hello World - " + i);
-            logger2.log(map);
-            try {
-                Thread.sleep(1000);
-                System.out.println("" + i);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        Thread thread1 = new Thread(() -> {
+            for (int i = 0; i < 150; ++i) {
+                logger1.updateIndex("loginSuccess", 1);
+                logger1.updateIndex("loginFail", 2);
+                HashMap<String, String> map = new HashMap<>();
+                map.put("username", "Sweet");
+                map.put("time", "2016-04-21");
+                map.put("message", "Hello World - " + logger1.getIndex("loginSuccess"));
+                logger2.log(map);
+                try {
+                    Thread.sleep(1000);
+                    System.out.println("" + i);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        }
+        });
+        thread1.start();
+
+        Thread thread2 = new Thread(() -> {
+            for (int i = 0; i < 150; ++i) {
+                logger1.updateIndex("loginSuccess", 1);
+                logger1.updateIndex("loginFail", 2);
+                HashMap<String, String> map = new HashMap<>();
+                map.put("username", "Sweet");
+                map.put("time", "2016-04-21");
+                map.put("message", "Hello World - " + logger1.getIndex("loginSuccess"));
+                logger2.log(map);
+                try {
+                    Thread.sleep(1000);
+                    System.out.println("" + i);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread2.start();
+
+
+        Thread.currentThread().join();
 
         logger1.stop();
         am.stop();

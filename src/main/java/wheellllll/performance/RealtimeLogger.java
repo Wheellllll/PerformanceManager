@@ -21,11 +21,14 @@ public class RealtimeLogger extends Logger {
     public void log(HashMap<String, String> data) {
         mLock.readLock().lock();
         File file = new File(mLogDir, mLogPrefix + "." + mLogSuffix);
+        File tmpFile = new File(getTmpFolder(), mLogPrefix + "." + mLogSuffix);
         if (getFormatPattern() == null) {
             LogUtils.log(file, data, true);
+            if (isArchive) LogUtils.log(tmpFile, data, true);
         }
         else {
             LogUtils.log(file, data, getFormatPattern(), true);
+            if (isArchive) LogUtils.log(tmpFile, data, getFormatPattern(), true);
         }
         mLock.readLock().unlock();
     }
@@ -33,11 +36,14 @@ public class RealtimeLogger extends Logger {
     public void log(String data) {
         mLock.readLock().lock();
         File file = new File(mLogDir, mLogPrefix + "." + mLogSuffix);
+        File tmpFile = new File(getTmpFolder(), mLogPrefix + "." + mLogSuffix);
         if (getFormatPattern() == null) {
             LogUtils.log(file, data, true);
+            if (isArchive) LogUtils.log(file, data, true);
         }
         else {
             LogUtils.log(file, data, true);
+            if (isArchive) LogUtils.log(file, data, true);
         }
         mLock.readLock().unlock();
     }

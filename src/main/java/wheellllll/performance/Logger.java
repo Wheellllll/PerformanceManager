@@ -1,6 +1,9 @@
 package wheellllll.performance;
 
+import org.zeroturnaround.zip.commons.FileUtils;
+
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by sweet on 4/21/16.
@@ -9,8 +12,9 @@ public abstract class Logger {
     protected String mLogDir = "./";
     protected String mLogPrefix = "record";
     protected String mLogSuffix = "log";
-
     protected String mFormatPattern = null;
+
+    protected boolean isArchive = false;
 
     public void setLogDir(String logDir) {
         File file = new File(logDir);
@@ -28,6 +32,25 @@ public abstract class Logger {
 
     public void setLogSuffix(String logSuffix) {
         mLogSuffix = logSuffix;
+    }
+
+    public void setArchive(boolean archive) {
+        isArchive = archive;
+    }
+
+    public File getTmpFolder() {
+        File logDir = new File(mLogDir);
+        File tmpFolder = new File(System.getProperty("java.io.tmpdir") + "/.wheellllll/" + logDir.getName());
+        if (!tmpFolder.exists()) tmpFolder.mkdirs();
+        return tmpFolder;
+    }
+
+    public void cleanTmpFolder() {
+        try {
+            FileUtils.cleanDirectory(getTmpFolder());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public String getLogDir() {

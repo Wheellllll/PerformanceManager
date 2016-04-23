@@ -13,8 +13,6 @@ import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Created by sweet on 4/10/16.
@@ -32,11 +30,9 @@ public class ArchiveManager {
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH_mm_ss");
 
     private ArrayList<Logger> loggers;
-    private Set<String> setFolders;
 
     public ArchiveManager() {
         loggers = new ArrayList<>();
-        setFolders = new HashSet<>();
         sc = Executors.newScheduledThreadPool(1);
     }
 
@@ -56,27 +52,14 @@ public class ArchiveManager {
     public void start() {
         sc.scheduleAtFixedRate(() -> {
             File tmpFolder = new File(System.getProperty("java.io.tmpdir") + "/.wheellllll");
-            tmpFolder.mkdirs();
-
-            setFolders.clear();
-            for (Logger logger : loggers) {
-                if (!setFolders.contains(logger.getLogDir())) {
-                    File srcFolder = new File(logger.getLogDir());
-                    File destFolder = new File(tmpFolder, srcFolder.getName());
-                    try {
-                        FileUtils.copyDirectory(srcFolder, destFolder);
-                        FileUtils.cleanDirectory(srcFolder);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    setFolders.add(logger.getLogDir());
-                }
-            }
+            if (!tmpFolder.exists()) tmpFolder.mkdirs();
 
             File destArchive = new File(mArchiveDir, mArchivePrefix + " " + df.format(new Date()) + "." + mArchiveSuffix);
             try {
                 ZipUtil.pack(tmpFolder, destArchive);
-                FileUtils.cleanDirectory(tmpFolder);
+                for (Logger logger : loggers) {
+                    logger.cleanTmpFolder();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -91,10 +74,12 @@ public class ArchiveManager {
     }
 
     public void addLogger(Logger logger) {
+        logger.setArchive(true);
         loggers.add(logger);
     }
 
     public void removeLogger(Logger logger) {
+        logger.setArchive(true);
         loggers.remove(logger);
     }
 

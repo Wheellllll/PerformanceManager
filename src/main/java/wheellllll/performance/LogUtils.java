@@ -86,4 +86,34 @@ public class LogUtils {
         }
     }
 
+    public static void log(File file, String message, boolean append) {
+        BufferedWriter bufferedWriter = null;
+        FileWriter fileWriter = null;
+        try {
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+            fileWriter = new FileWriter(file.getAbsolutePath(), append);
+            bufferedWriter = new BufferedWriter(fileWriter);
+            bufferedWriter.write(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bufferedWriter != null) {
+                    bufferedWriter.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            try {
+                if (fileWriter != null) {
+                    fileWriter.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 }

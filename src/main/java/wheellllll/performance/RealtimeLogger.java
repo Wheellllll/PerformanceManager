@@ -29,4 +29,16 @@ public class RealtimeLogger extends Logger {
         }
         mLock.readLock().unlock();
     }
+
+    public void log(String data) {
+        mLock.readLock().lock();
+        File file = new File(mLogDir, mLogPrefix + "." + mLogSuffix);
+        if (getFormatPattern() == null) {
+            LogUtils.log(file, data, true);
+        }
+        else {
+            LogUtils.log(file, data, true);
+        }
+        mLock.readLock().unlock();
+    }
 }

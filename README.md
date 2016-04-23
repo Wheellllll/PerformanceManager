@@ -2,7 +2,7 @@
 > 这是一个简单的性能管理模块，可以自由添加指标、定时输出日志到文件以及按需压缩.
 
 ### 警告
-本模块经过2.0版本后经过重构，
+本模块经过2.0版本后经过重构，如果想使用旧版的api请升级到1.4，不要升级到2.0以上
 
 ### ChangeLog
 
@@ -154,7 +154,14 @@ realtimeLogger.setLogDir("./log");        //输出到当前工作目录下的log
 realtimeLogger.setLogPrefix("server");      //设置日志的前缀为server
 ```
 
-#### 自定义输出格式
+#### 普通输出
+```java
+String message = "Hello World\n";
+realtimeLogger.log(message); //写String到文件里去
+```
+
+
+#### 文艺输出(自定义格式输出)
 ```java
 realtimeLogger.setFormatPattern(
     "Username : ${username}\nTime : ${time}\nMessage : ${message}\n\n"

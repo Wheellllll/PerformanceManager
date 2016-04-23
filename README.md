@@ -5,6 +5,10 @@
 本模块经过2.0版本后经过重构，如果想使用旧版的api请保持版本到1.3（文档在[https://github.com/Wheellllll/PerformanceManager/blob/master/README-1.0.md](https://github.com/Wheellllll/PerformanceManager/blob/master/README-1.0.md)），不要升级到2.0以上
 
 ### ChangeLog
+#### v2.1.0
+- 修复IntervalLogger不能输出的bug
+- 增量压缩，不再删除历史记录
+
 #### v2.0.1
 - 添加字符串输出功能
 
@@ -16,7 +20,7 @@
 #### v1.3
 - 修复log输出的文件夹问题
 
-#### v1.2 
+#### v1.2
 - 加锁，成为线程安全的
 
 #### v1.1

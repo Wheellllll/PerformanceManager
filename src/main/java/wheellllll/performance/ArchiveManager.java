@@ -25,8 +25,7 @@ public class ArchiveManager {
     private String mArchiveSuffix = "zip";
 
     private ScheduledExecutorService sc = null;
-    private ReadWriteLock mLock = null;
-    private int mInitialDelay = 0;
+    private int mInitialDelay = 1;
     private int mPeriod = 1;
     private TimeUnit mTimeUnit = TimeUnit.MINUTES;
 
@@ -39,7 +38,6 @@ public class ArchiveManager {
         loggers = new ArrayList<>();
         setFolders = new HashSet<>();
         sc = Executors.newScheduledThreadPool(1);
-        mLock = new ReentrantReadWriteLock();
     }
 
     public void setInitialDelay(int initialDelay) {
@@ -56,34 +54,31 @@ public class ArchiveManager {
     }
 
     public void start() {
-        sc.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                File tmpFolder = new File(System.getProperty("java.io.tmpdir") + "/.wheellllll");
-                tmpFolder.mkdirs();
+        sc.scheduleAtFixedRate(() -> {
+            File tmpFolder = new File(System.getProperty("java.io.tmpdir") + "/.wheellllll");
+            tmpFolder.mkdirs();
 
-                setFolders.clear();
-                for (Logger logger : loggers) {
-                    if (!setFolders.contains(logger.getLogDir())) {
-                        File srcFolder = new File(logger.getLogDir());
-                        File destFolder = new File(tmpFolder, srcFolder.getName());
-                        try {
-                            FileUtils.copyDirectory(srcFolder, destFolder);
-                            FileUtils.cleanDirectory(srcFolder);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        setFolders.add(logger.getLogDir());
+            setFolders.clear();
+            for (Logger logger : loggers) {
+                if (!setFolders.contains(logger.getLogDir())) {
+                    File srcFolder = new File(logger.getLogDir());
+                    File destFolder = new File(tmpFolder, srcFolder.getName());
+                    try {
+                        FileUtils.copyDirectory(srcFolder, destFolder);
+                        FileUtils.cleanDirectory(srcFolder);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
+                    setFolders.add(logger.getLogDir());
                 }
+            }
 
-                File destArchive = new File(mArchiveDir, mArchivePrefix + " " + df.format(new Date()) + "." + mArchiveSuffix);
-                try {
-                    ZipUtil.pack(tmpFolder, destArchive);
-                    FileUtils.cleanDirectory(tmpFolder);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            File destArchive = new File(mArchiveDir, mArchivePrefix + " " + df.format(new Date()) + "." + mArchiveSuffix);
+            try {
+                ZipUtil.pack(tmpFolder, destArchive);
+                FileUtils.cleanDirectory(tmpFolder);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         },
                 mInitialDelay,

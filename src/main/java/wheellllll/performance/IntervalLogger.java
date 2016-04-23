@@ -17,7 +17,7 @@ public class IntervalLogger extends Logger {
     private HashMap<String, Integer> indexes = new HashMap<>();
     private ScheduledExecutorService sc = null;
     private ReadWriteLock mLock = null;
-    private int mInitialDelay = 0;
+    private int mInitialDelay = 1;
     private int mPeriod = 1;
     private TimeUnit mTimeUnit = TimeUnit.MINUTES;
 
@@ -43,26 +43,23 @@ public class IntervalLogger extends Logger {
 
 
     public void start() {
-        sc.scheduleAtFixedRate(new Runnable() {
-           @Override
-           public void run() {
-               mLock.readLock().lock();
-               File file = new File(mLogDir, mLogPrefix + " " + df.format(new Date()) + "." + mLogSuffix);
+        sc.scheduleAtFixedRate(() -> {
+            mLock.readLock().lock();
+            File file = new File(mLogDir, mLogPrefix + " " + df.format(new Date()) + "." + mLogSuffix);
 
-               HashMap<String, String> data = new HashMap<>();
-               for (String key : indexes.keySet()) {
-                    data.put(key, Integer.toString(indexes.get(key)));
-               }
+            HashMap<String, String> data = new HashMap<>();
+            for (String key : indexes.keySet()) {
+                 data.put(key, Integer.toString(indexes.get(key)));
+            }
 
-               if (getFormatPattern() == null) {
-                   LogUtils.log(file, data, false);
-               }
-               else {
-                   LogUtils.log(file, data, getFormatPattern(), false);
-               }
-               mLock.readLock().unlock();
-           }
-       },
+            if (getFormatPattern() == null) {
+                LogUtils.log(file, data, false);
+            }
+            else {
+                LogUtils.log(file, data, getFormatPattern(), false);
+            }
+            mLock.readLock().unlock();
+        },
                 mInitialDelay,
                 mPeriod,
                 mTimeUnit);

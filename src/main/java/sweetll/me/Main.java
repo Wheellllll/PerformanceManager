@@ -12,7 +12,6 @@ public class Main {
     public static void main(String[] args) {
         // write your code here
 
-
         //Initial Interval Logger
         IntervalLogger logger1 = new IntervalLogger();
         logger1.setLogDir("./log");
@@ -38,8 +37,7 @@ public class Main {
 
         am.addLogger(logger1);
         am.addLogger(logger2);
-        am.setInterval(1, TimeUnit.DAYS);
-
+        am.setInterval(1, TimeUnit.MINUTES);
 
         logger1.start();
         am.start();

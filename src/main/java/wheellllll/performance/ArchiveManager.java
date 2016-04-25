@@ -54,6 +54,13 @@ public class ArchiveManager {
             File tmpFolder = new File(System.getProperty("java.io.tmpdir") + "/.wheellllll");
             if (!tmpFolder.exists()) tmpFolder.mkdirs();
 
+            for (Logger logger : loggers) {
+                File tFolder = logger.getTmpFolder();
+                if (!tFolder.exists()) {
+                    tFolder.mkdirs();
+                }
+            }
+
             File destArchive = new File(mArchiveDir, mArchivePrefix + " " + df.format(new Date()) + "." + mArchiveSuffix);
             try {
                 ZipUtil.pack(tmpFolder, destArchive);

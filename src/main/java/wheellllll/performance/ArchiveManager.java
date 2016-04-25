@@ -55,18 +55,13 @@ public class ArchiveManager {
             if (!tmpFolder.exists()) tmpFolder.mkdirs();
 
             for (Logger logger : loggers) {
-                File tFolder = logger.getTmpFolder();
-                if (!tFolder.exists()) {
-                    tFolder.mkdirs();
-                }
+                logger.getTmpFolder();
             }
 
             File destArchive = new File(mArchiveDir, mArchivePrefix + " " + df.format(new Date()) + "." + mArchiveSuffix);
             try {
                 ZipUtil.pack(tmpFolder, destArchive);
-                for (Logger logger : loggers) {
-                    logger.cleanTmpFolder();
-                }
+                FileUtils.cleanDirectory(tmpFolder);
             } catch (Exception e) {
                 e.printStackTrace();
             }

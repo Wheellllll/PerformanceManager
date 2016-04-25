@@ -16,7 +16,7 @@ public class Main {
         IntervalLogger logger1 = new IntervalLogger();
         logger1.setLogDir("./log");
         logger1.setLogPrefix("test");
-        logger1.setInterval(1, TimeUnit.SECONDS);
+        logger1.setInterval(5, TimeUnit.SECONDS);
 
         logger1.addIndex("loginSuccess");
         logger1.addIndex("loginFail");
@@ -33,24 +33,24 @@ public class Main {
         //Initial Archive Manager
         ArchiveManager am = new ArchiveManager();
         am.setArchiveDir("./archive");
-        am.setDatePattern("yyyy-MM-dd HH:mm");
+        am.setDatePattern("yyyy-MM-dd HH:mm:ss");
 
         am.addLogger(logger1);
         am.addLogger(logger2);
-        am.setInterval(1, TimeUnit.MINUTES);
+        am.setInterval(5, TimeUnit.SECONDS);
 
         logger1.start();
         am.start();
 
         Thread thread1 = new Thread(() -> {
             for (int i = 0; i < 150; ++i) {
-                logger1.updateIndex("loginSuccess", 1);
-                logger1.updateIndex("loginFail", 2);
+//                logger1.updateIndex("loginSuccess", 1);
+//                logger1.updateIndex("loginFail", 2);
                 HashMap<String, String> map = new HashMap<>();
                 map.put("username", "Sweet");
                 map.put("time", "2016-04-21");
                 map.put("message", "Hello World - " + logger1.getIndex("loginSuccess"));
-                logger2.log(map);
+//                logger2.log(map);
                 try {
                     Thread.sleep(1000);
                     System.out.println("" + i);
@@ -63,13 +63,13 @@ public class Main {
 
         Thread thread2 = new Thread(() -> {
             for (int i = 0; i < 150; ++i) {
-                logger1.updateIndex("loginSuccess", 1);
-                logger1.updateIndex("loginFail", 2);
+//                logger1.updateIndex("loginSuccess", 1);
+//                logger1.updateIndex("loginFail", 2);
                 HashMap<String, String> map = new HashMap<>();
                 map.put("username", "Sweet");
                 map.put("time", "2016-04-21");
                 map.put("message", "Hello World - " + logger1.getIndex("loginSuccess"));
-                logger2.log(map);
+//                logger2.log(map);
                 try {
                     Thread.sleep(1000);
                     System.out.println("" + i);

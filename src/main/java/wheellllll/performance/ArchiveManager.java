@@ -54,12 +54,14 @@ public class ArchiveManager {
             File tmpFolder = new File(System.getProperty("java.io.tmpdir") + "/.wheellllll");
             if (!tmpFolder.exists()) tmpFolder.mkdirs();
 
+            for (Logger logger : loggers) {
+                logger.getTmpFolder();
+            }
+
             File destArchive = new File(mArchiveDir, mArchivePrefix + " " + df.format(new Date()) + "." + mArchiveSuffix);
             try {
                 ZipUtil.pack(tmpFolder, destArchive);
-                for (Logger logger : loggers) {
-                    logger.cleanTmpFolder();
-                }
+                FileUtils.cleanDirectory(tmpFolder);
             } catch (Exception e) {
                 e.printStackTrace();
             }

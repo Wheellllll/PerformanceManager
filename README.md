@@ -5,6 +5,13 @@
 本模块经过2.0版本后经过重构，如果想使用旧版的api请保持版本到1.3（文档在[https://github.com/Wheellllll/PerformanceManager/blob/master/README-1.0.md](https://github.com/Wheellllll/PerformanceManager/blob/master/README-1.0.md)），不要升级到2.0以上
 
 ### ChangeLog
+#### v2.1.2
+- 消除控制台输出
+- 修复奇怪的bug
+
+#### v2.1.1
+- 修复空压缩的错误
+
 #### v2.1.0
 - 修复IntervalLogger不能输出的bug
 - 增量压缩，不再删除历史记录

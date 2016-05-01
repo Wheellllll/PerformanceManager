@@ -59,6 +59,7 @@ public class ArchiveManager {
     public void start() {
         sc.scheduleAtFixedRate(() -> {
             File tmpFolder = new File(System.getProperty("java.io.tmpdir") + "/.wheellllll");
+            File periodArchive = new File(mArchiveDir, "Sum_"+mArchivePrefix + " "+ df.format(new Date()) +"." + mArchiveSuffix);
             if (!tmpFolder.exists()) tmpFolder.mkdirs();
 
             for (Logger logger : loggers) {
@@ -68,11 +69,10 @@ public class ArchiveManager {
             File destArchive = new File(mArchiveDir, mArchivePrefix + " " + df.format(new Date()) + "." + mArchiveSuffix);
             tmp++;
 
-            if(mInterval == tmp){
-                File periodArchive = new File("Sum"+mArchiveDir, mArchivePrefix + "_"+ df.format(new Date()) +"." + mArchiveSuffix);
+            if(mInterval == tmp){//定包归档
+                File periodFolder = new File(System.getProperty("java.io.tmpdir") + "/.wheellllll");
                 try{
-                    ZipUtil.pack(tmpFolder, periodArchive);
-                    FileUtils.cleanDirectory(tmpFolder);
+                    ZipUtil.pack(periodFolder, periodArchive);
                 }
                 catch (Exception e) {
                     e.printStackTrace();

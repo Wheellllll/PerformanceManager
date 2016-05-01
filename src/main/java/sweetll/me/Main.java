@@ -38,6 +38,7 @@ public class Main {
         am.addLogger(logger1);
         am.addLogger(logger2);
         am.setInterval(5, TimeUnit.SECONDS);
+        am.setArchivePeriod(7);
 
         logger1.start();
         am.start();

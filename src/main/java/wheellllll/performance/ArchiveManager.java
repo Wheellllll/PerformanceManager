@@ -25,6 +25,7 @@ public class ArchiveManager {
     private ScheduledExecutorService sc = null;
     private int mInitialDelay = 1;
     private int mPeriod = 1;
+    private int mInterval = 1;
     private TimeUnit mTimeUnit = TimeUnit.MINUTES;
 
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH_mm_ss");
@@ -45,6 +46,12 @@ public class ArchiveManager {
         mTimeUnit = timeUnit;
     }
 
+    // 设置归档数目
+    public void setArchivePeriod(int number){
+        mInterval = number;
+    }
+    //用于记载的临时变量
+    int tmp = 0;
     public void setDatePattern(String datePattern) {
         df.applyPattern(datePattern);
     }
@@ -52,6 +59,8 @@ public class ArchiveManager {
     public void start() {
         sc.scheduleAtFixedRate(() -> {
             File tmpFolder = new File(System.getProperty("java.io.tmpdir") + "/.wheellllll");
+            File periodFolder = new File(System.getProperty("java.io.tmpdir") + "/.wheellllll");
+            File periodArchive = new File(mArchiveDir, "Sum_"+mArchivePrefix + " "+ df.format(new Date()) +"." + mArchiveSuffix);
             if (!tmpFolder.exists()) tmpFolder.mkdirs();
 
             for (Logger logger : loggers) {
@@ -59,6 +68,18 @@ public class ArchiveManager {
             }
 
             File destArchive = new File(mArchiveDir, mArchivePrefix + " " + df.format(new Date()) + "." + mArchiveSuffix);
+            tmp++;
+
+            if(mInterval == tmp){//定包归档
+                try{
+                    ZipUtil.pack(periodFolder, periodArchive);
+                    FileUtils.cleanDirectory(periodFolder);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+                tmp = 0;
+            }
             try {
                 ZipUtil.pack(tmpFolder, destArchive);
                 FileUtils.cleanDirectory(tmpFolder);

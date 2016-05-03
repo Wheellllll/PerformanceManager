@@ -37,7 +37,7 @@ public class WeeklyArchive  {
     }
 
     public  WeeklyArchive(){
-        files = new File[10];
+//        files = new File[];
         sc = Executors.newScheduledThreadPool(1);
     }
 
@@ -48,46 +48,55 @@ public class WeeklyArchive  {
     public String getWeeklyArcDir(){ return mToDir; }
 
     public void start() {
-//        sc.scheduleAtFixedRate(()-> {
-//                    File tmpFolder = new File(System.getProperty("java.io.tmpdir") + "/.wheellllll");
-                    File tmpFolder = new File("E:/大三（下）/软件复用/PM/tmp");
-                    System.out.println("doing start...");
-                    try{
-                       if (!tmpFolder.exists()) {
-                           tmpFolder.mkdirs();
-                           System.out.println("tmp not exist");
-                           }
-                    }catch (Exception e){
-                       e.printStackTrace();
-                   }
-
-                    for (int i = 0; i < 2; i++) {
-                            ZipUtil.unpack(files[i], tmpFolder);
-                    }
-
-                    File destArchive = new File(mToDir, "WeeklyArc " + df.format(new Date()) + ".zip");
-                    try {
-                            ZipUtil.pack(tmpFolder, destArchive);
-                            FileUtils.cleanDirectory(tmpFolder);
-                        System.out.println("doing packing...");
-                    } catch (Exception e) {
-                            e.printStackTrace();
-                    }
-//                },
-//                mInitialDelay,
-//                mPeriod,
-//                mTimeUnit);
+        sc.scheduleAtFixedRate(new archive() ,
+                mInitialDelay,
+                mPeriod,
+                mTimeUnit);
         System.out.println("3");
     }
+
+    private class archive implements  Runnable
+    {
+        @Override
+        public void run(){
+                File tmpFolder = new File(System.getProperty("java.io.tmpdir") + "/.wheellllll");
+                System.out.println("doing start...");
+                try{
+                    if (!tmpFolder.exists()) {
+                        tmpFolder.mkdirs();
+                        System.out.println("tmp not exist");
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+                for (int i = 0; i <files.length ; i++) {
+                    ZipUtil.unpack(files[i], tmpFolder);
+                    System.out.println("Doing unpacking...");
+                }
+
+                File destArchive = new File(mToDir, "WeeklyArc " + df.format(new Date()) + ".zip");
+                try {
+                    ZipUtil.pack(tmpFolder, destArchive);
+                    FileUtils.cleanDirectory(tmpFolder);
+                    System.out.println("doing packing...");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+    }
+
+
 
     public void stop() {
         sc.shutdown();
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws InterruptedException {
         WeeklyArchive test= new WeeklyArchive();
         test.setWeeklyArchiveDir("./from","./to");
         test.start();
+        Thread.currentThread().join();
         test.stop();
     }
 

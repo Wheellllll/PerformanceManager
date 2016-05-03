@@ -1,4 +1,4 @@
-package test;
+package wheellllll.performance;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
@@ -52,6 +52,7 @@ public class IntervalLoggerTest {
         IntervalLogger logger = new IntervalLogger();
         String index = "test";
         Integer in = new Integer(8);
+        logger.addIndex(index);
         logger.setIndex(index,in);
         Integer result = logger.getIndex(index);
         assertEquals(result,in);
@@ -62,6 +63,7 @@ public class IntervalLoggerTest {
         IntervalLogger logger = new IntervalLogger();
         String index = "test";
         Integer in = new Integer(8);
+        logger.addIndex(index);
         logger.updateIndex(index,in);
         Integer result = logger.getIndex(index);
         assertEquals(result,in);
@@ -78,14 +80,13 @@ public class IntervalLoggerTest {
         assertEquals(result,in);
     }
 
-    @Test
+    @Test(expected=NullPointerException.class)
     public void testRemoveIndex() throws Exception {
         IntervalLogger logger = new IntervalLogger();
         String index = "test";
         logger.addIndex(index);
         logger.removeIndex(index);
-        assertEquals(null,logger.getIndex(index));
-
+        logger.getIndex(index);
     }
 
     @Test

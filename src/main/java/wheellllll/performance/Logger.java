@@ -38,21 +38,6 @@ public abstract class Logger {
         isArchive = archive;
     }
 
-    public File getTmpFolder() {
-        File logDir = new File(mLogDir);
-        File tmpFolder = new File(System.getProperty("java.io.tmpdir") + "/.wheellllll/" + logDir.getName());
-        if (!tmpFolder.exists()) tmpFolder.mkdirs();
-        return tmpFolder;
-    }
-
-    public void cleanTmpFolder() {
-        try {
-            FileUtils.cleanDirectory(getTmpFolder());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public String getLogDir() {
         return mLogDir;
     }

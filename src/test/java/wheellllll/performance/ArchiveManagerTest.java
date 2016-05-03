@@ -1,4 +1,4 @@
-package test;
+package wheellllll.performance;
 
 import org.junit.Test;
 import wheellllll.performance.ArchiveManager;
@@ -80,6 +80,6 @@ public class ArchiveManagerTest {
     @Test
     public void testGetArchiveSuffix() throws Exception {
         ArchiveManager manager = new ArchiveManager();
-        assertEquals("log",manager.getArchiveSuffix());
+        assertEquals("zip",manager.getArchiveSuffix());
     }
 }

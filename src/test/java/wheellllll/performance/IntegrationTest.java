@@ -1,15 +1,16 @@
-package sweetll.me;
+package wheellllll.performance;
 
-import wheellllll.performance.ArchiveManager;
-import wheellllll.performance.IntervalLogger;
-import wheellllll.performance.RealtimeLogger;
+import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
-public class Main {
-
-    public static void main(String[] args) throws InterruptedException {
+/**
+ * Created by sweet on 5/3/16.
+ */
+public class IntegrationTest {
+    @Test
+    public void testFunction() throws Exception {
         //Initial Interval Logger
         IntervalLogger logger1 = new IntervalLogger();
         logger1.setLogDir("./log");
@@ -87,7 +88,6 @@ public class Main {
             }
         });
         thread2.start();
-
 
         Thread.currentThread().join();
 

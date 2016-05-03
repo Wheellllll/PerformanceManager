@@ -1,4 +1,4 @@
-package test;
+package wheellllll.performance;
 
 import org.junit.Test;
 

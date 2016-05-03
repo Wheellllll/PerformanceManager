@@ -89,7 +89,7 @@ public class IntegrationTest {
         });
         thread2.start();
 
-        Thread.currentThread().join();
+//        Thread.currentThread().join();
 
         logger1.stop();
         am1.stop();

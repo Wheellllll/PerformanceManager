@@ -52,6 +52,7 @@ public class IntervalLoggerTest {
         IntervalLogger logger = new IntervalLogger();
         String index = "test";
         Integer in = new Integer(8);
+        logger.addIndex(index);
         logger.setIndex(index,in);
         Integer result = logger.getIndex(index);
         assertEquals(result,in);

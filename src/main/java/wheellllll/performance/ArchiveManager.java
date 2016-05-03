@@ -29,10 +29,10 @@ public class ArchiveManager {
 
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH_mm_ss");
 
-    private ArrayList<Logger> loggers;
+    private Set<File> folders;
 
     public ArchiveManager() {
-        loggers = new ArrayList<>();
+        folders = new HashSet<>();
         sc = Executors.newScheduledThreadPool(1);
     }
 
@@ -51,17 +51,26 @@ public class ArchiveManager {
 
     public void start() {
         sc.scheduleAtFixedRate(() -> {
-            File tmpFolder = new File(System.getProperty("java.io.tmpdir") + "/.wheellllll");
-            if (!tmpFolder.exists()) tmpFolder.mkdirs();
-
-            for (Logger logger : loggers) {
-                logger.getTmpFolder();
-            }
-
-            File destArchive = new File(mArchiveDir, mArchivePrefix + " " + df.format(new Date()) + "." + mArchiveSuffix);
             try {
+                File tmpFolder = new File(System.getProperty("java.io.tmpdir") + "/.wheellllll"+System.nanoTime());
+                if (!tmpFolder.exists()) tmpFolder.mkdirs();
+
+                for (File folder : folders) {
+                    if (!folder.exists()) folder.mkdirs();
+                    File ttmpFolder = new File(tmpFolder, folder.getName());
+                    if (!ttmpFolder.exists()) ttmpFolder.mkdirs();
+                    FileUtils.copyDirectory(folder, ttmpFolder);
+                    FileUtils.cleanDirectory(folder);
+                }
+
+                File destArchive = new File(mArchiveDir, mArchivePrefix + " " + df.format(new Date()) + "." + mArchiveSuffix);
+
+                File archiveFolder = new File(mArchiveDir);
+                if (!archiveFolder.exists()) archiveFolder.mkdirs();
+
                 ZipUtil.pack(tmpFolder, destArchive);
-                FileUtils.cleanDirectory(tmpFolder);
+
+                FileUtils.deleteDirectory(tmpFolder);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -77,12 +86,13 @@ public class ArchiveManager {
 
     public void addLogger(Logger logger) {
         logger.setArchive(true);
-        loggers.add(logger);
+        File folder = new File(logger.getLogDir());
+        folders.add(folder);
     }
 
-    public void removeLogger(Logger logger) {
-        logger.setArchive(true);
-        loggers.remove(logger);
+    public void addFolder(String path) {
+        File folder = new File(path);
+        folders.add(folder);
     }
 
     public void setArchiveDir(String archiveDir) {

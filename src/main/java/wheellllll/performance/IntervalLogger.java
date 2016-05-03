@@ -47,7 +47,9 @@ public class IntervalLogger extends Logger {
             mLock.readLock().lock();
             Date date = new Date();
             File file = new File(mLogDir, mLogPrefix + " " + df.format(date) + "." + mLogSuffix);
-            File tmpFile = new File(getTmpFolder(), mLogPrefix + " " + df.format(date) + "." + mLogSuffix);
+
+            File logFolder = new File(mLogDir);
+            if (!logFolder.exists()) logFolder.mkdirs();
 
             HashMap<String, String> data = new HashMap<>();
             for (String key : indexes.keySet()) {
@@ -56,10 +58,8 @@ public class IntervalLogger extends Logger {
 
             if (getFormatPattern() == null) {
                 LogUtils.log(file, data, false);
-                if (isArchive) LogUtils.log(tmpFile, data, false);
             }
             else {
-                if (isArchive) LogUtils.log(tmpFile, data, false);
                 LogUtils.log(file, data, getFormatPattern(), false);
             }
             mLock.readLock().unlock();

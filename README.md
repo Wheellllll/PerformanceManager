@@ -5,6 +5,9 @@
 本模块经过2.0版本后经过重构，如果想使用旧版的api请保持版本到1.3（文档在[https://github.com/Wheellllll/PerformanceManager/blob/master/README-1.0.md](https://github.com/Wheellllll/PerformanceManager/blob/master/README-1.0.md)），不要升级到2.0以上
 
 ### ChangeLog
+#### v2.1.3
+- `ArchiveManager`添加新的api`addFolder`
+
 #### v2.1.2
 - 消除控制台输出
 - 修复压缩时会把上一次结果压缩进来的bug
@@ -267,6 +270,12 @@ am.setInitialDelay(1);             //延时1天后执行
 ```
 am.addLogger(intervalLogger);
 am.addLogger(realtimeLogger);
+```
+
+#### 添加需要压缩的路径
+```
+am.addFolder("./log");
+am.addFolder("./llog");
 ```
 
 #### 启动

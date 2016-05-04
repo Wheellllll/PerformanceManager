@@ -1,7 +1,5 @@
 package wheellllll.performance;
 
-import org.zeroturnaround.zip.commons.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -53,4 +51,5 @@ public abstract class Logger {
     public String getFormatPattern() {
         return mFormatPattern;
     }
+
 }

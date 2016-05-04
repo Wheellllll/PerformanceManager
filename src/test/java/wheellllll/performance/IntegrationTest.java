@@ -22,35 +22,15 @@ public class IntegrationTest {
 
         logger1.setFormatPattern("Login Success Number : ${loginSuccess}\nLogin Fail Number : ${loginFail}\n\n");
 
-        //Initial Realtime Logger
+//        //Initial Realtime Logger
         RealtimeLogger logger2 = new RealtimeLogger();
         logger2.setLogDir("./llog");
         logger2.setLogPrefix("test");
 
         logger2.setFormatPattern("Username : ${username}\nTime : ${time}\nMessage : ${message}\n\n");
 
-        //Initial Archive Manager
-        ArchiveManager am1 = new ArchiveManager();
-        am1.setArchiveDir("./archive");
-        am1.setDatePattern("yyyy-MM-dd HH:mm:ss");
-
-        am1.addLogger(logger1);
-        am1.addLogger(logger2);
-//        am1.addFolder("./log");
-//        am1.addFolder("./llog");
-        am1.setInterval(5, TimeUnit.SECONDS);
-
-        ArchiveManager am2 = new ArchiveManager();
-        am2.setArchiveDir("./aarchive");
-        am2.setDatePattern("yyyy-MM-dd HH:mm:ss");
-
-        am2.addFolder("./archive");
-        am2.setInterval(30, TimeUnit.SECONDS);
 
         logger1.start();
-        am1.start();
-        am2.start();
-
         Thread thread1 = new Thread(() -> {
             for (int i = 0; i < 150; ++i) {
                 logger1.updateIndex("loginSuccess", 1);
@@ -92,7 +72,5 @@ public class IntegrationTest {
 //        Thread.currentThread().join();
 
         logger1.stop();
-        am1.stop();
-        am2.stop();
     }
 }

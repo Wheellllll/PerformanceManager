@@ -25,12 +25,30 @@ public class RealtimeLogger extends Logger {
         File logFolder = new File(mLogDir);
         if (!logFolder.exists()) logFolder.mkdirs();
 
-        if (getFormatPattern() == null) {
-            LogUtils.log(file, data, true);
+        String message = LogUtils.MapToString(data, getFormatPattern());
+
+        //Limit the total size
+        if (getMaxTotalSize() != -1) {
+            long mFileSize = getMaxFileSize() == -1 ?
+                    message.getBytes().length : Math.min(message.getBytes().length, getMaxFileSize() * getFileSizeUnit().getValue());
+            long expectedSize = getLogDirSize() + mFileSize;
+            long sizeLimit = getMaxTotalSize() * getTotalSizeUnit().getValue();
+            if (expectedSize > sizeLimit) {
+                File[] filesToDelete = null;
+                if (isTruncateLatest()) {
+                    filesToDelete = LogUtils.latestFiles(
+                            new File(getLogDir()), getMaxTotalSize() * getTotalSizeUnit().getValue(), message.getBytes().length);
+                } else {
+                    filesToDelete = LogUtils.earliestFiles(
+                            new File(getLogDir()), getMaxTotalSize() * getTotalSizeUnit().getValue(), message.getBytes().length);
+                }
+                for (File f : filesToDelete) {
+                    f.delete();
+                }
+            }
         }
-        else {
-            LogUtils.log(file, data, getFormatPattern(), true);
-        }
+
+        LogUtils.log(file, message, true, getMaxFileSize() * getFileSizeUnit().getValue());
         mLock.readLock().unlock();
     }
 
@@ -41,12 +59,28 @@ public class RealtimeLogger extends Logger {
         File logFolder = new File(mLogDir);
         if (!logFolder.exists()) logFolder.mkdirs();
 
-        if (getFormatPattern() == null) {
-            LogUtils.log(file, data, true);
+        //Limit the total size
+        if (getMaxTotalSize() != -1) {
+            long mFileSize = getMaxFileSize() == -1 ?
+                    data.getBytes().length : Math.min(data.getBytes().length, getMaxFileSize() * getFileSizeUnit().getValue());
+            long expectedSize = getLogDirSize() + mFileSize;
+            long sizeLimit = getMaxTotalSize() * getTotalSizeUnit().getValue();
+            if (expectedSize > sizeLimit) {
+                File[] filesToDelete = null;
+                if (isTruncateLatest()) {
+                    filesToDelete = LogUtils.latestFiles(
+                            new File(getLogDir()), getMaxTotalSize() * getTotalSizeUnit().getValue(), data.getBytes().length);
+                } else {
+                    filesToDelete = LogUtils.earliestFiles(
+                            new File(getLogDir()), getMaxTotalSize() * getTotalSizeUnit().getValue(), data.getBytes().length);
+                }
+                for (File f : filesToDelete) {
+                    f.delete();
+                }
+            }
         }
-        else {
-            LogUtils.log(file, data, true);
-        }
+
+        LogUtils.log(file, data, true, getMaxFileSize() * getFileSizeUnit().getValue());
         mLock.readLock().unlock();
     }
 }

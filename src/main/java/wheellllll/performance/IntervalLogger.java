@@ -56,12 +56,30 @@ public class IntervalLogger extends Logger {
                  data.put(key, Integer.toString(indexes.get(key)));
             }
 
-            if (getFormatPattern() == null) {
-                LogUtils.log(file, data, false);
+            String message = LogUtils.MapToString(data, getFormatPattern());
+
+            //Limit the total size
+            if (getMaxTotalSize() != -1) {
+                long mFileSize = getMaxFileSize() == -1 ?
+                        message.getBytes().length : Math.min(message.getBytes().length, getMaxFileSize() * getFileSizeUnit().getValue());
+                long expectedSize = getLogDirSize() + mFileSize;
+                long sizeLimit = getMaxTotalSize() * getTotalSizeUnit().getValue();
+                if (expectedSize > sizeLimit) {
+                    File[] filesToDelete = null;
+                    if (isTruncateLatest()) {
+                        filesToDelete = LogUtils.latestFiles(
+                                new File(getLogDir()), getMaxTotalSize() * getTotalSizeUnit().getValue(), message.getBytes().length);
+                    } else {
+                        filesToDelete = LogUtils.earliestFiles(
+                                new File(getLogDir()), getMaxTotalSize() * getTotalSizeUnit().getValue(), message.getBytes().length);
+                    }
+                    for (File f : filesToDelete) {
+                        f.delete();
+                    }
+                }
             }
-            else {
-                LogUtils.log(file, data, getFormatPattern(), false);
-            }
+
+            LogUtils.log(file, message, false, getMaxFileSize() * getFileSizeUnit().getValue());
             mLock.readLock().unlock();
         },
                 mInitialDelay,

@@ -1,7 +1,6 @@
 package wheellllll.performance;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Created by sweet on 4/21/16.
@@ -12,25 +11,13 @@ public abstract class Logger {
     protected String mLogSuffix = "log";
     protected String mFormatPattern = null;
 
+    protected int maxFileSize = -1;
+    protected SizeUnit fileSizeUnit = SizeUnit.B;
+    protected int maxTotalSize = -1;
+    protected SizeUnit totalSizeUnit = SizeUnit.B;
+    protected boolean truncateLatest = true;
+
     protected boolean isArchive = false;
-
-    public void setLogDir(String logDir) {
-        File file = new File(logDir);
-        file.mkdirs();
-        mLogDir = logDir;
-    }
-
-    public void setFormatPattern(String formatPattern) {
-        mFormatPattern = formatPattern;
-    }
-
-    public void setLogPrefix(String logPrefix) {
-        mLogPrefix = logPrefix;
-    }
-
-    public void setLogSuffix(String logSuffix) {
-        mLogSuffix = logSuffix;
-    }
 
     public void setArchive(boolean archive) {
         isArchive = archive;
@@ -40,16 +27,85 @@ public abstract class Logger {
         return mLogDir;
     }
 
+    public void setLogDir(String logDir) {
+        File file = new File(logDir);
+        file.mkdirs();
+        mLogDir = logDir;
+    }
+
+    public long getLogDirSize() {
+        File file = new File(mLogDir);
+        return LogUtils.getDirSize(file);
+    }
+
     public String getLogPrefix() {
         return mLogPrefix;
+    }
+
+    public void setLogPrefix(String logPrefix) {
+        mLogPrefix = logPrefix;
     }
 
     public String getLogSuffix() {
         return mLogSuffix;
     }
 
+    public void setLogSuffix(String logSuffix) {
+        mLogSuffix = logSuffix;
+    }
+
     public String getFormatPattern() {
         return mFormatPattern;
     }
 
+    public void setFormatPattern(String formatPattern) {
+        mFormatPattern = formatPattern;
+    }
+
+    public void setMaxFileSize(int size, SizeUnit unit) {
+        maxFileSize = size;
+        fileSizeUnit = unit;
+    }
+
+    public void setMaxTotalSize(int size, SizeUnit unit) {
+        maxTotalSize = size;
+        fileSizeUnit = unit;
+    }
+
+    public boolean isTruncateLatest() {
+        return truncateLatest;
+    }
+
+    public void setTruncateLatest(boolean truncateLatest) {
+        this.truncateLatest = truncateLatest;
+    }
+
+    public int getMaxFileSize() {
+        return maxFileSize;
+    }
+
+    public SizeUnit getFileSizeUnit() {
+        return fileSizeUnit;
+    }
+
+    public int getMaxTotalSize() {
+        return maxTotalSize;
+    }
+
+    public SizeUnit getTotalSizeUnit() {
+        return totalSizeUnit;
+    }
+
+    enum SizeUnit {
+        GB(1024 * 1024 * 1024), MB(1024 * 1024), KB(1024), B(1);
+        private long value;
+
+        SizeUnit(long value) {
+            this.value = value;
+        }
+
+        public long getValue() {
+            return value;
+        }
+    }
 }

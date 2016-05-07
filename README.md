@@ -5,6 +5,10 @@
 本模块经过2.0版本后经过重构，如果想使用旧版的api请保持版本到1.3（文档在[https://github.com/Wheellllll/PerformanceManager/blob/master/README-1.0.md](https://github.com/Wheellllll/PerformanceManager/blob/master/README-1.0.md)），不要升级到2.0以上
 
 ### ChangeLog
+#### v2.1.4
+- 功能扩展，加入对文件大小和总文件大小的限制
+- `ArchiveManager`模块移至专门的仓库，请移步[ArchiveManager](https://github.com/Wheellllll/ArchiveManager)
+
 #### v2.1.3
 - `ArchiveManager`添加新的api`addFolder`
 
@@ -40,6 +44,9 @@
 - 诞生
 
 ### 安装
+
+#### 注意
+这两天maven仓库所在的服务器挂了，所以请手动下载最新的jar包
 
 #### Maven
 
@@ -102,7 +109,7 @@ suffix=log
 ```java
 intervalLogger.setLogDir("./log");        //输出到当前工作目录下的log文件夹里
 intervalLogger.setLogPrefix("server");    //设置日志的前缀为server
-intervalLogger.setLogSuffix("log");       //设置日志的后缀为log 
+intervalLogger.setLogSuffix("log");       //设置日志的后缀为log
 intervalLogger.setDateFormat("yyyy-MM-dd HH_mm_ss");  //日期格式类似2016-04-21 19_36_30
 ```
 更多关于日期的格式化方法请参考 [https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html](https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html)
@@ -132,7 +139,7 @@ intervalLogger.updateIndex("loginFail", 2);       //loginFail指标加2
 
 #### 将指标数值清除（直接删除指标）
 ```java
-pm.clear();
+intervalLogger.clear();
 ```
 
 #### 自定义输出格式
@@ -156,12 +163,12 @@ Login Fail Number : 6
 
 #### 启动
 ```java
-pm.start();
+intervalLogger.start();
 ```
 
 #### 关闭
 ```java
-pm.stop();
+intervalLogger.stop();
 ```
 
 ### RealtimeLogger
@@ -226,69 +233,24 @@ Username : Black
 time : 2016-04-21 20:21:50
 message : bar
 ```
-
-
-### ArchiveManager
-本部分是上述两种记录器的辅助模块，负责定时将它们输出的文件打包并保存，首先创建一个实例：
+### 文件大小限制及总文件大小限制
+通过方法```setMaxFileSize```和```setMaxTotalSize```设置最大值：
 ```java
-ArchiveManager am = new ArchiveManager();
+Logger logger = new IntervalLogger();
+logger.setMaxFileSize(500, Logger.SizeUnit.KB); //第一个参数是数值，第二个参数是单位
+logger.setMaxTotalSize(200, Logger.SizeUnit.MB); //第一个参数是数值，第二个参数是单位
 ```
+提供四种单位：B，KB， MB， GB
+#### 注意
+请合理设置最大值，例如当设置了总大小限制后，单个文件的最大值不应该超过总最大值。该构件会根据当前设置的值判断是否需要修改另一个值以保证合乎逻辑。如果你的设置不太正确，结果可能会与预期有差别。
 
-#### 指定输出文件夹和输出文件名
-输出日志的文件命名方式如下所示，注意，这里不能指定后缀名，因为我们只支持zip格式的压缩：
-
-`${prefix} ${date}.zip`
-
-比如说：
-```
-prefix=server
-date=yyyy-MM-dd
-```
-则生成的压缩文件名称会长成这个样子：
-
-- `server 2016-04-21.zip`
-- `server 2016-04-22.zip`
-- `server 2016-04-23.zip`
-
-请注意，如果你使用的是`Windows系统`，请不要在文件名中出现`":"`字符，否则你的电脑会爆炸
-
-前缀，后缀和日期格式可以通过以下方法指定
+当写入单个文件的内容大于最大值时，会舍弃末尾多出的内容；当一个目录下的文件大小达到最大值时，会根据设置删除最早的或者最新的文件，可以通过```setTruncateLatest```方法进行设置：
 ```java
-intervalLogger.setLogDir("./archive");        //输出到当前工作目录下的archive文件夹里
-intervalLogger.setLogPrefix("server");        //设置日志的前缀为server
-intervalLogger.setDateFormat("yyyy-MM-dd");  //日期格式类似2016-04-21
+logger.setTruncateLatest(true);
 ```
-更多关于日期的格式化方法请参考 [https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html](https://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html)
+当参数为true时，会删除最新的内容，当参数为false时，会删除最早的内容，默认情况下truncateLatest的值为false，即删除最早的内容。
 
-#### 指定输出的时间间隔
-```java
-am.setInterval(1, TimeUnit.DAYS);  //每隔1天压缩一次
-am.setInitialDelay(1);             //延时1天后执行
-```
-
-#### 添加需要压缩的记录器
-```
-am.addLogger(intervalLogger);
-am.addLogger(realtimeLogger);
-```
-
-#### 添加需要压缩的路径
-```
-am.addFolder("./log");
-am.addFolder("./llog");
-```
-
-#### 启动
-```java
-am.start();
-```
-
-#### 关闭
-```java
-am.stop();
-```
-
-###一个完整的例子
+### 一个完整的例子
 ```java
 //Initial Interval Logger
 IntervalLogger logger1 = new IntervalLogger();
@@ -304,16 +266,6 @@ RealtimeLogger logger2 = new RealtimeLogger();
 logger2.setLogDir("./llog");
 logger2.setLogPrefix("test");
 logger2.setFormatPattern("Username : ${username}\nTime : ${time}\nMessage : ${message}\n\n");
-
-//Initial Archive Manager
-ArchiveManager am = new ArchiveManager();
-am.setArchiveDir("./archive");
-am.setDatePattern("yyyy-MM-dd HH:mm");
-am.addLogger(logger1);
-am.addLogger(logger2);
-am.setInterval(1, TimeUnit.DAYS);
-logger1.start();
-am.start();
 
 //Test
 for (int i = 0; i < 300; ++i) {
@@ -331,6 +283,5 @@ for (int i = 0; i < 300; ++i) {
         e.printStackTrace();
     }
     logger1.stop();
-    am.stop();
 }
 ```

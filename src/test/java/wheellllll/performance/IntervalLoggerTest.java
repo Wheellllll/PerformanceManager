@@ -4,6 +4,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 import wheellllll.performance.IntervalLogger;
 
+import java.util.IllegalFormatCodePointException;
+
 import static org.junit.Assert.*;
 
 /**
@@ -87,6 +89,22 @@ public class IntervalLoggerTest {
         logger.addIndex(index);
         logger.removeIndex(index);
         logger.getIndex(index);
+    }
+
+    @Test
+    public void testSetMaxFileSize() throws Exception {
+        IntervalLogger logger = new IntervalLogger();
+        logger.setMaxFileSize(1, Logger.SizeUnit.B);
+        assertEquals(1, logger.getMaxFileSize());
+        assertEquals(Logger.SizeUnit.B, Logger.SizeUnit.B);
+    }
+
+    @Test
+    public void testSetMaxTotalSize() throws Exception {
+        IntervalLogger logger = new IntervalLogger();
+        logger.setMaxTotalSize(10, Logger.SizeUnit.MB);
+        assertEquals(10, logger.getMaxTotalSize());
+        assertEquals(Logger.SizeUnit.MB, Logger.SizeUnit.MB);
     }
 
     @Test

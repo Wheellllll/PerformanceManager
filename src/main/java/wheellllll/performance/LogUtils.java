@@ -15,6 +15,9 @@ import java.util.*;
 
 class LogUtils {
 
+    /**
+     * Transform a <code>Map<String, String><code/> data to Sting using a given format pattern.
+     */
     static String MapToString(Map<String, String> map, String formatPattern) {
         if (formatPattern == null) {
             StrBuilder sb = new StrBuilder();
@@ -29,6 +32,13 @@ class LogUtils {
         }
     }
 
+    /**
+     * This method provide writing function.
+     * @param file The file need to write to
+     * @param message The String need to write
+     * @param append Decide whether writing is appended or not
+     * @param sizeLimit The max file size limit
+     */
     static void log(File file, String message, boolean append, long sizeLimit) {
         BufferedWriter bufferedWriter = null;
         FileWriter fileWriter = null;
@@ -69,6 +79,13 @@ class LogUtils {
         }
     }
 
+    /**
+     * Get the earliest files of a directory sorting by last modified time when the total size of the directory
+     * reach the limit.
+     * @param dir Directory
+     * @param totalSizeLimit The total file size limit of directory
+     * @param newFileSize Size of new file which will be created in the directory
+    */
     static File[] earliestFiles(File dir, long totalSizeLimit, long newFileSize) {
         assert dir.isDirectory();
         File[] children = dir.listFiles();
@@ -86,12 +103,19 @@ class LogUtils {
         });
         long currentDirSize = getDirSize(dir);
         int i = 0;
-        while (currentDirSize + newFileSize > totalSizeLimit) {
+        while (currentDirSize + newFileSize > totalSizeLimit && i < files.size()) {
             currentDirSize -= files.get(i++).length();
         }
         return files.subList(0, i).toArray(new File[0]);
     }
 
+    /**
+     * Get the latest files of a directory sorting by last modified time when the total size of the directory
+     * reach the limit.
+     * @param dir Directory
+     * @param totalSizeLimit The total file size limit of directory
+     * @param newFileSize Size of new file which will be created in the directory
+     */
     static File[] latestFiles(File dir, long totalSizeLimit, long newFileSize) {
         assert dir.isDirectory();
         File[] children = dir.listFiles();
@@ -109,12 +133,15 @@ class LogUtils {
         });
         long currentDirSize = getDirSize(dir);
         int i = 0;
-        while (currentDirSize + newFileSize > totalSizeLimit) {
+        while (currentDirSize + newFileSize > totalSizeLimit && i < files.size()) {
             currentDirSize -= files.get(i++).length();
         }
         return files.subList(0, i).toArray(new File[0]);
     }
 
+    /**
+     * Get size of a directory or a file.
+     */
     static long getDirSize(File file) {
         if (file.exists()) {
             if (file.isDirectory()) {

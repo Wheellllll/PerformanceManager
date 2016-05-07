@@ -15,7 +15,7 @@ public abstract class Logger {
     protected SizeUnit fileSizeUnit = SizeUnit.B;
     protected int maxTotalSize = -1;
     protected SizeUnit totalSizeUnit = SizeUnit.B;
-    protected boolean truncateLatest = true;
+    protected boolean truncateLatest = false;
 
     protected boolean isArchive = false;
 
@@ -63,13 +63,28 @@ public abstract class Logger {
     }
 
     public void setMaxFileSize(int size, SizeUnit unit) {
+        if (size < 0)
+            return;
         maxFileSize = size;
         fileSizeUnit = unit;
+        if (maxTotalSize != -1 && maxFileSize * fileSizeUnit.getValue() > maxTotalSize * totalSizeUnit.getValue()) {
+            maxTotalSize = size;
+            totalSizeUnit = unit;
+        }
     }
 
     public void setMaxTotalSize(int size, SizeUnit unit) {
+        if (size < 0)
+            return;
         maxTotalSize = size;
         fileSizeUnit = unit;
+        if (maxFileSize == -1) {
+            maxFileSize = size;
+            fileSizeUnit = unit;
+        } else if (maxFileSize * fileSizeUnit.getValue() > maxTotalSize * totalSizeUnit.getValue()){
+            maxFileSize = size;
+            fileSizeUnit = unit;
+        }
     }
 
     public boolean isTruncateLatest() {

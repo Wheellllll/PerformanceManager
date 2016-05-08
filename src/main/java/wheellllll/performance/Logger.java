@@ -111,7 +111,7 @@ public abstract class Logger {
         return totalSizeUnit;
     }
 
-    enum SizeUnit {
+    public enum SizeUnit {
         GB(1024 * 1024 * 1024), MB(1024 * 1024), KB(1024), B(1);
         private long value;
 

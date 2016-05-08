@@ -3,6 +3,7 @@
     <output-path>$PROJECT_DIR$/out/artifacts/PerformanceManager_jar</output-path>
     <root id="archive" name="PerformanceManager.jar">
       <element id="module-output" name="PerformanceManager" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

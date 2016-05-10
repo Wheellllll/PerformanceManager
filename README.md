@@ -62,7 +62,7 @@
     <dependency>
         <groupId>wheellllll</groupId>
         <artifactId>PerformanceManager</artifactId>
-        <version>2.0-SNAPSHOT</version>
+        <version>2.1.4-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```

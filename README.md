@@ -219,6 +219,20 @@ record.put("message", "bar");
 
 realtimeLogger.log(record);  //将信息写到文件里去
 ```
+####使用logback接口
+本模块既可以使用该模块自己实现的日志功能，也可以实现Logback的日志功能；使用Logback的日志功能的示例如下：
+
+```java
+org.slf4j.Logger logger1 = LoggerFactory.getLogger(XXX.class);//org.slf4j.Logger 的使用方法可以参看logback的官方文档
+IntervalLogger logViaLogback1 = new IntervalLogger(logger1);
+....
+//其他照旧
+
+org.slf4j.Logger logger2 = LoggerFactory.getLogger(XXX.class);
+RealtimeLogger logViaLogback2 = new RealtimeLogger(logger2)
+....
+//其他照旧
+```
 
 其中类似`${variable}`的样式就会在输出的时候被具体的指标数值代替，比如说上述例子，输出格式有可能会是这个样子：
 ```
@@ -238,6 +252,8 @@ logger.setMaxFileSize(500, Logger.SizeUnit.KB); //第一个参数是数值，第
 logger.setMaxTotalSize(200, Logger.SizeUnit.MB); //第一个参数是数值，第二个参数是单位
 ```
 提供四种单位：B，KB， MB， GB
+
+
 #### 注意
 请合理设置最大值，例如当设置了总大小限制后，单个文件的最大值不应该超过总最大值。该构件会根据当前设置的值判断是否需要修改另一个值以保证合乎逻辑。如果你的设置不太正确，结果可能会与预期有差别。
 

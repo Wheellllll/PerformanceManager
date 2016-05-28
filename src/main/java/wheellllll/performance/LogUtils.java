@@ -1,7 +1,9 @@
 package wheellllll.performance;
 
+import ch.qos.logback.classic.*;
 import org.apache.commons.lang3.text.StrBuilder;
 import org.apache.commons.lang3.text.StrSubstitutor;
+import org.slf4j.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -77,6 +79,12 @@ class LogUtils {
                 e.printStackTrace();
             }
         }
+    }
+
+    static void log(org.slf4j.Logger logger, String message) {
+
+        logger.info(message);
+
     }
 
     /**

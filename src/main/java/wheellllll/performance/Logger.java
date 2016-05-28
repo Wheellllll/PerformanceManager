@@ -18,6 +18,8 @@ public abstract class Logger {
     protected boolean truncateLatest = false;
 
     protected boolean isArchive = false;
+    protected org.slf4j.Logger logger;
+    protected boolean isUseLogback = false;
 
     public void setArchive(boolean archive) {
         isArchive = archive;

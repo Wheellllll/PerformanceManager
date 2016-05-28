@@ -1,5 +1,6 @@
 package wheellllll.performance;
 
+import java.awt.*;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,11 +20,18 @@ public class IntervalLogger extends Logger {
     private ReadWriteLock mLock = null;
     private int mInitialDelay = 1;
     private int mPeriod = 1;
-    private TimeUnit mTimeUnit = TimeUnit.MINUTES;
+    private TimeUnit mTimeUnit = TimeUnit.SECONDS;
 
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH_mm_ss");
 
     public IntervalLogger() {
+        sc = Executors.newScheduledThreadPool(1);
+        mLock = new ReentrantReadWriteLock();
+    }
+
+    public IntervalLogger(org.slf4j.Logger _logger) {
+        this.logger = _logger;
+        isUseLogback = true;
         sc = Executors.newScheduledThreadPool(1);
         mLock = new ReentrantReadWriteLock();
     }
@@ -43,48 +51,59 @@ public class IntervalLogger extends Logger {
 
 
     public void start() {
+
         sc.scheduleAtFixedRate(() -> {
-            mLock.readLock().lock();
-            Date date = new Date();
-            File file = new File(mLogDir, mLogPrefix + " " + df.format(date) + "." + mLogSuffix);
 
-            File logFolder = new File(mLogDir);
-            if (!logFolder.exists()) logFolder.mkdirs();
+                    mLock.readLock().lock();
+                    HashMap<String, String> data = new HashMap<>();
+                    for (String key : indexes.keySet()) {
+                        data.put(key, Integer.toString(indexes.get(key)));
+                    }
+                    String message = LogUtils.MapToString(data, getFormatPattern());
 
-            HashMap<String, String> data = new HashMap<>();
-            for (String key : indexes.keySet()) {
-                 data.put(key, Integer.toString(indexes.get(key)));
-            }
+                    if (!isUseLogback) {
+                        Date date = new Date();
+                        File file = new File(mLogDir, mLogPrefix + " " + df.format(date) + "." + mLogSuffix);
 
-            String message = LogUtils.MapToString(data, getFormatPattern());
+                        File logFolder = new File(mLogDir);
+                        if (!logFolder.exists()) logFolder.mkdirs();
 
-            //Limit the total size
-            if (getMaxTotalSize() != -1) {
-                long mFileSize = getMaxFileSize() == -1 ?
-                        message.getBytes().length : Math.min(message.getBytes().length, getMaxFileSize() * getFileSizeUnit().getValue());
-                long expectedSize = getLogDirSize() + mFileSize;
-                long sizeLimit = getMaxTotalSize() * getTotalSizeUnit().getValue();
-                if (expectedSize > sizeLimit) {
-                    File[] filesToDelete = null;
-                    if (isTruncateLatest()) {
-                        filesToDelete = LogUtils.latestFiles(
-                                new File(getLogDir()), getMaxTotalSize() * getTotalSizeUnit().getValue(), message.getBytes().length);
+
+                        //Limit the total size
+                        if (getMaxTotalSize() != -1) {
+                            long mFileSize = getMaxFileSize() == -1 ?
+                                    message.getBytes().length : Math.min(message.getBytes().length, getMaxFileSize() * getFileSizeUnit().getValue());
+                            long expectedSize = getLogDirSize() + mFileSize;
+                            long sizeLimit = getMaxTotalSize() * getTotalSizeUnit().getValue();
+                            if (expectedSize > sizeLimit) {
+                                File[] filesToDelete = null;
+                                if (isTruncateLatest()) {
+                                    filesToDelete = LogUtils.latestFiles(
+                                            new File(getLogDir()), getMaxTotalSize() * getTotalSizeUnit().getValue(), message.getBytes().length);
+                                } else {
+                                    filesToDelete = LogUtils.earliestFiles(
+                                            new File(getLogDir()), getMaxTotalSize() * getTotalSizeUnit().getValue(), message.getBytes().length);
+                                }
+                                for (File f : filesToDelete) {
+                                    f.delete();
+                                }
+                            }
+                        }
+
+                        LogUtils.log(file, message, false, getMaxFileSize() * getFileSizeUnit().getValue());
+
                     } else {
-                        filesToDelete = LogUtils.earliestFiles(
-                                new File(getLogDir()), getMaxTotalSize() * getTotalSizeUnit().getValue(), message.getBytes().length);
-                    }
-                    for (File f : filesToDelete) {
-                        f.delete();
-                    }
-                }
-            }
 
-            LogUtils.log(file, message, false, getMaxFileSize() * getFileSizeUnit().getValue());
-            mLock.readLock().unlock();
-        },
+                        LogUtils.log(this.logger, message);
+                    }
+                    mLock.readLock().unlock();
+
+                },
                 mInitialDelay,
                 mPeriod,
                 mTimeUnit);
+
+
     }
 
     public void stop() {

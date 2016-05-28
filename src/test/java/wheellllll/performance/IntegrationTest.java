@@ -1,6 +1,7 @@
 package wheellllll.performance;
 
 import org.junit.Test;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class IntegrationTest {
     @Test
     public void testFunction() throws Exception {
+        /*
         //Initial Interval Logger
         IntervalLogger logger1 = new IntervalLogger();
         logger1.setLogDir("./log");
@@ -73,7 +75,19 @@ public class IntegrationTest {
 //        Thread.currentThread().join();
 
         logger1.stop();
+
+        */
+        org.slf4j.Logger logger = LoggerFactory.getLogger(IntegrationTest.class);
+        IntervalLogger logViaLogback = new IntervalLogger(logger);
+        logViaLogback.addIndex("logSucess");
+        logViaLogback.addIndex("logFail");
+        logViaLogback.updateIndex("logSucess",2);
+        logViaLogback.updateIndex("logFail",2);
+        logViaLogback.start();
+
+
     }
+
 
     @Test
     public void testFileSizeLimit() throws Exception {
